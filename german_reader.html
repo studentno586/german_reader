@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>German Idealism</title>
+
+    <!-- PWA Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GermanReader">
+    <meta name="theme_color" content="#0a0a0a">
+    
+    <!-- Dynamic Icons -->
+    <link rel="apple-touch-icon" id="app-icon-ios" href="">
+    <link rel="icon" id="app-icon-fav" href="">
+    <link rel="manifest" id="manifest-placeholder">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Noto+Serif+JP:wght@300;400;500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-main: #e0e0e0;
+            --text-sub: #888888;
+            --accent-color: #d4af37; /* Antique Gold */
+            --border-color: #333333;
+            --card-bg: #111111;
+            --status-passed: #2e7d32;
+            --status-review: #c62828;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            overscroll-behavior-y: none;
+            letter-spacing: 0.05em;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #050505;
+            color: white;
+            padding-top: calc(40px + var(--safe-area-top));
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .sidebar-header { 
+            padding: 0 30px 40px; 
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+            background-color: var(--accent-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M256 0c42.5 0 79.9 21.8 102.6 55.4 12 17.7 34.6 22.8 53.1 12.5 7.7-4.3 16.7-5.3 25.1-2.2 24.1 8.7 38.6 35.1 33.6 60.1-2.9 14.3 1.9 29.1 12.8 38.8 18.7 16.7 21.6 45 6.6 65.1-13 17.4-13 41.2 0 58.6 15 20.1 12.1 48.4-6.6 65.1-10.9 9.8-15.7 24.5-12.8 38.8 5 25-9.5 51.4-33.6 60.1-8.4 3-17.4 2.1-25.1-2.2-18.5-10.3-41.1-5.2-53.1 12.5C335.9 490.2 298.5 512 256 512c-141.4 0-256-114.6-256-256S114.6 0 256 0zm0 128c-70.7 0-128 57.3-128 128s57.3 128 128 128 128-57.3 128-128-57.3-128-128-128zm-32 96c0-17.7 14.3-32 32-32s32 14.3 32 32-14.3 32-32 32-32-14.3-32-32zm32 112c-29.3 0-55.2-13.7-71.3-34.9 8.2-7.3 18.7-11.8 30.3-12.7 11.2-.9 22.5 3.3 30.6 11.4 6 6 14.1 9.4 22.7 9.4 23.3 0 43.1-16.1 48.3-39.2 1.4-6.1 7.6-9.9 13.7-8.5 6.1 1.4 9.9 7.6 8.5 13.7C330.4 316.3 296 336 256 336z'/%3E%3C/svg%3E") no-repeat center / contain;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M256 0c42.5 0 79.9 21.8 102.6 55.4 12 17.7 34.6 22.8 53.1 12.5 7.7-4.3 16.7-5.3 25.1-2.2 24.1 8.7 38.6 35.1 33.6 60.1-2.9 14.3 1.9 29.1 12.8 38.8 18.7 16.7 21.6 45 6.6 65.1-13 17.4-13 41.2 0 58.6 15 20.1 12.1 48.4-6.6 65.1-10.9 9.8-15.7 24.5-12.8 38.8 5 25-9.5 51.4-33.6 60.1-8.4 3-17.4 2.1-25.1-2.2-18.5-10.3-41.1-5.2-53.1 12.5C335.9 490.2 298.5 512 256 512c-141.4 0-256-114.6-256-256S114.6 0 256 0zm0 128c-70.7 0-128 57.3-128 128s57.3 128 128 128 128-57.3 128-128-57.3-128-128-128zm-32 96c0-17.7 14.3-32 32-32s32 14.3 32 32-14.3 32-32 32-32-14.3-32-32zm32 112c-29.3 0-55.2-13.7-71.3-34.9 8.2-7.3 18.7-11.8 30.3-12.7 11.2-.9 22.5 3.3 30.6 11.4 6 6 14.1 9.4 22.7 9.4 23.3 0 43.1-16.1 48.3-39.2 1.4-6.1 7.6-9.9 13.7-8.5 6.1 1.4 9.9 7.6 8.5 13.7C330.4 316.3 296 336 256 336z'/%3E%3C/svg%3E") no-repeat center / contain;
+        }
+
+        .sidebar-header h2 { font-family: 'Cinzel', serif; font-size: 1.3rem; margin: 0; color: var(--text-main); letter-spacing: 0.15em; font-weight: 400; }
+        .sidebar-header span { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; color: var(--text-sub); display: block; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.2em; }
+        
+        /* Updated Search Button */
+        .sidebar-search-btn {
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            margin: 0 35px 40px; 
+            padding: 12px 0; 
+            background: transparent; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 1px; 
+            color: rgba(255, 255, 255, 0.8); 
+            font-family: 'Cinzel', serif; 
+            font-size: 0.6rem; 
+            cursor: pointer; 
+            transition: all 0.4s ease; 
+            letter-spacing: 0.25em; 
+            text-transform: uppercase;
+        }
+        
+        .sidebar-search-btn svg {
+            width: 12px;
+            height: 12px;
+            opacity: 0.8;
+            fill: none;
+            stroke: currentColor;
+        }
+
+        .sidebar-search-btn:hover { 
+            border-color: rgba(255, 255, 255, 0.5); 
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05); 
+            letter-spacing: 0.35em; /* Expand effect */
+        }
+
+        .nav-item { 
+            padding: 16px 30px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 0.8rem; 
+            color: var(--text-sub); 
+            position: relative;
+            letter-spacing: 0.05em;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--text-main); }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 100%; background: var(--accent-color); }
+        
+        .close-sidebar-btn { display: none; position: absolute; top: var(--safe-area-top); right: 15px; background: none; border: none; color: white; font-size: 1.5rem; padding: 10px; cursor: pointer; }
+
+        /* Main Content */
+        .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 60px 50px; width: 100%; transition: margin-left 0.3s; padding-bottom: calc(100px + var(--safe-area-bottom)); }
+
+        /* Mobile Header */
+        .mobile-header { display: none; position: fixed; top: 0; left: 0; width: 100%; height: calc(var(--header-height) + var(--safe-area-top)); padding-top: var(--safe-area-top); background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); z-index: 900; align-items: center; justify-content: space-between; padding-left: 20px; padding-right: 20px; border-bottom: 1px solid var(--border-color); }
+        .mobile-title { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--text-main); letter-spacing: 0.1em; }
+        .menu-toggle { background: none; border: none; color: var(--text-main); padding: 5px; cursor: pointer; }
+
+        /* Typography */
+        header { text-align: left; margin-bottom: 60px; position: relative; animation: fadeIn 1s ease; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        h1 { font-family: 'Cinzel', serif; color: var(--text-main); font-size: 2.2rem; margin-bottom: 10px; line-height: 1.2; font-weight: 400; letter-spacing: 0.05em; }
+        .subtitle { font-family: 'Noto Serif JP', serif; font-size: 0.9rem; color: var(--accent-color); letter-spacing: 0.05em; margin-top: 10px; }
+
+        /* FAB Menu */
+        .fab-container { position: fixed; bottom: calc(40px + var(--safe-area-bottom)); right: 40px; z-index: 800; display: flex; flex-direction: column-reverse; align-items: center; gap: 20px; }
+        .fab-main { width: 64px; height: 64px; border-radius: 50%; background: #000; border: 1px solid var(--accent-color); color: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .fab-main:active { transform: scale(0.95); }
+        .fab-main:hover { background: var(--accent-color); color: #000; }
+        .fab-sub { width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.3s; }
+        .fab-container:hover .fab-sub, .fab-container.active .fab-sub { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .fab-sub:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .fab-sub:nth-child(2) { transition-delay: 0.05s; }
+        .fab-sub:nth-child(3) { transition-delay: 0.1s; }
+        .fab-sub:nth-child(4) { transition-delay: 0.15s; }
+
+        /* Hidden Mode Eye Icon SVG (Monochrome White) */
+        .icon-eye {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #e0e0e0; 
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Parallel Text */
+        .parallel-section { display: flex; flex-direction: column; gap: 50px; max-width: 800px; margin: 0 auto; }
+        .sentence-group { position: relative; padding-left: 25px; border-left: 1px solid var(--border-color); transition: all 0.3s ease; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .sentence-group:hover, .sentence-group.active { border-left-color: var(--accent-color); padding-left: 30px; }
+        .sentence-group.passed { border-left-color: var(--status-passed); }
+        .sentence-group.passed::before { content: '✓'; position: absolute; left: -25px; top: 0; color: var(--status-passed); font-size: 0.8rem; background: #000; padding: 2px; }
+        .sentence-group.failed { border-left-color: var(--status-review); }
+        .sentence-group.failed::before { content: '!'; position: absolute; left: -25px; top: 0; color: var(--status-review); font-size: 0.8rem; background: #000; padding: 2px 5px; }
+
+        .de-text-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 15px; }
+        .de-text { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 1.15rem; line-height: 1.7; color: var(--text-main); flex: 1; letter-spacing: 0.02em; }
+        .btn-speak { background: none; border: 1px solid var(--border-color); border-radius: 50%; width: 30px; height: 30px; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.8rem; }
+        .btn-speak:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        
+        /* Japanese Text & Hidden Mode Logic */
+        .ja-text { 
+            font-family: 'Noto Serif JP', serif; 
+            font-size: 0.95rem; 
+            line-height: 2.2; 
+            color: var(--text-sub); 
+            margin-bottom: 15px; 
+            transition: all 0.4s ease;
+        }
+        
+        body.hidden-mode .ja-text {
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            user-select: none;
+            cursor: pointer;
+            filter: blur(4px);
+        }
+        
+        body.hidden-mode .ja-text:hover {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            filter: blur(2px);
+        }
+
+        body.hidden-mode .ja-text.revealed {
+            color: var(--text-sub);
+            text-shadow: none;
+            filter: blur(0);
+        }
+
+        #hidden-mode-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+            z-index: 999;
+            display: none;
+            pointer-events: none;
+            letter-spacing: 0.1em;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        body.hidden-mode #hidden-mode-indicator { display: block; }
+
+        .action-row { display: flex; gap: 20px; margin-top: 20px; opacity: 0.6; transition: opacity 0.3s; }
+        .sentence-group:hover .action-row { opacity: 1; }
+        .btn-action-minimal { background: transparent; border: none; color: var(--text-sub); font-family: 'Montserrat', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 6px; transition: all 0.3s; }
+        .btn-action-minimal:hover { color: var(--accent-color); }
+
+        /* Notes & AI Analysis */
+        .note-area { margin-top: 20px; display: none; }
+        .note-area.visible { display: block; animation: fadeIn 0.3s ease; }
+        .note-input { width: 100%; background: #111; border: 1px solid var(--border-color); color: var(--text-main); padding: 15px; font-family: 'Noto Serif JP', serif; font-size: 0.9rem; border-radius: 0; resize: vertical; min-height: 80px; line-height: 1.8; }
+        .note-input:focus { outline: none; border-color: var(--accent-color); }
+        .ai-analysis { margin-top: 25px; background: #111; border-top: 1px solid var(--accent-color); padding: 25px; display: none; font-size: 0.9rem; line-height: 1.8; color: #ccc; position: relative; }
+        .ai-analysis::before { content: 'AI TUTOR'; position: absolute; top: -10px; left: 20px; background: #000; padding: 0 10px; color: var(--accent-color); font-family: 'Cinzel', serif; font-size: 0.7rem; }
+        .ai-analysis.visible { display: block; animation: fadeIn 0.5s ease; }
+        .ai-analysis h3 { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 25px; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; display: inline-block; }
+        .ai-analysis h3:first-child { margin-top: 0; }
+        .ai-analysis ul { padding-left: 15px; list-style-type: square; color: var(--text-sub); }
+        .ai-analysis code { color: var(--accent-color); font-family: 'Montserrat', sans-serif; font-size: 0.9em; }
+
+        /* Vocab Section */
+        .vocab-section { margin-top: 120px; border-top: 1px solid var(--border-color); padding-top: 50px; }
+        .vocab-section h2 { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 40px; letter-spacing: 0.1em; font-weight: 400; text-align: center; }
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
+        .vocab-item { padding: 15px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; transition: border-color 0.3s; text-align: center; }
+        .vocab-item:hover { border-color: var(--accent-color); }
+        .vocab-de { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: var(--text-main); font-weight: 500; }
+        .vocab-ja { font-size: 0.85rem; color: var(--text-sub); font-family: 'Noto Serif JP', serif; }
+
+        /* Modals & Components */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 2000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { opacity: 1; }
+        .modal-content { background: #050505; width: 100%; height: 100%; padding: 50px; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        .modal-header { margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-family: 'Cinzel', serif; font-size: 1.8rem; margin: 0; color: var(--text-main); letter-spacing: 0.1em; }
+        .close-modal-btn { background: none; border: 1px solid var(--border-color); color: var(--text-main); width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .close-modal-btn:hover { border-color: var(--accent-color); color: var(--accent-color); transform: rotate(90deg); }
+        .search-input, .chat-input, .translation-input { width: 100%; background: #111; border: 1px solid var(--border-color); color: var(--text-main); padding: 20px; font-size: 1rem; border-radius: 0; font-family: 'Noto Serif JP', serif; transition: border-color 0.3s; }
+        .search-input:focus, .chat-input:focus, .translation-input:focus { outline: none; border-color: var(--accent-color); }
+        .search-results { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
+        .search-result-item { padding: 20px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; }
+        .search-result-item:hover { border-color: var(--accent-color); background: #111; }
+        .result-source { font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--accent-color); margin-bottom: 8px; letter-spacing: 0.1em; }
+        .chat-container { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-bottom: 30px; }
+        .chat-message { max-width: 80%; padding: 20px; border: 1px solid var(--border-color); font-size: 0.95rem; line-height: 1.8; }
+        .chat-message.user { align-self: flex-end; border-color: var(--text-sub); color: var(--text-main); }
+        .chat-message.ai { align-self: flex-start; border-color: var(--accent-color); color: #ccc; }
+        .chat-input-area { margin-top: auto; display: flex; gap: 15px; border-top: 1px solid var(--border-color); padding-top: 30px; }
+        .chat-send-btn, .btn-grade { background: var(--text-main); color: #000; border: none; padding: 0 30px; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
+        .chat-send-btn:hover, .btn-grade:hover { background: var(--accent-color); }
+        .quiz-card { margin-bottom: 50px; }
+        .source-text { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 25px; line-height: 1.6; border-left: 3px solid var(--accent-color); padding-left: 20px; }
+        textarea.translation-input { height: 150px; resize: none; margin-bottom: 20px; }
+        .btn-grade { padding: 15px 40px; width: auto; display: inline-block; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); width: 100%; border-right: none; background: #0a0a0a; }
+            .sidebar.open { transform: translateX(0); }
+            .close-sidebar-btn { display: block; }
+            .mobile-header { display: flex; }
+            .main-content { margin-left: 0; padding: 30px 25px; padding-top: calc(var(--header-height) + var(--safe-area-top) + 30px); }
+            h1 { font-size: 1.8rem; }
+            .parallel-section { gap: 40px; }
+            .de-text { font-size: 1.05rem; }
+            .fab-container { bottom: calc(25px + var(--safe-area-bottom)); right: 25px; }
+            .modal-content { padding: 25px; padding-top: calc(var(--safe-area-top) + 30px); }
+            .modal-header h2 { font-size: 1.4rem; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .loader { border: 2px solid #333; border-radius: 50%; border-top: 2px solid var(--text-main); width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+
+    <script>
+        // Generate Dynamic Icon (Philosopher Bust)
+        const iconSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230a0a0a'/><path d='M256 0c42.5 0 79.9 21.8 102.6 55.4 12 17.7 34.6 22.8 53.1 12.5 7.7-4.3 16.7-5.3 25.1-2.2 24.1 8.7 38.6 35.1 33.6 60.1-2.9 14.3 1.9 29.1 12.8 38.8 18.7 16.7 21.6 45 6.6 65.1-13 17.4-13 41.2 0 58.6 15 20.1 12.1 48.4-6.6 65.1-10.9 9.8-15.7 24.5-12.8 38.8 5 25-9.5 51.4-33.6 60.1-8.4 3-17.4 2.1-25.1-2.2-18.5-10.3-41.1-5.2-53.1 12.5C335.9 490.2 298.5 512 256 512c-141.4 0-256-114.6-256-256S114.6 0 256 0zm0 128c-70.7 0-128 57.3-128 128s57.3 128 128 128 128-57.3 128-128-57.3-128-128-128zm-32 96c0-17.7 14.3-32 32-32s32 14.3 32 32-14.3 32-32 32-32-14.3-32-32zm32 112c-29.3 0-55.2-13.7-71.3-34.9 8.2-7.3 18.7-11.8 30.3-12.7 11.2-.9 22.5 3.3 30.6 11.4 6 6 14.1 9.4 22.7 9.4 23.3 0 43.1-16.1 48.3-39.2 1.4-6.1 7.6-9.9 13.7-8.5 6.1 1.4 9.9 7.6 8.5 13.7C330.4 316.3 296 336 256 336z' fill='%23d4af37'/></svg>`;
+        const iconUrl = `data:image/svg+xml;base64,${btoa(iconSvg)}`;
+        
+        document.getElementById('app-icon-ios').href = iconUrl;
+        document.getElementById('app-icon-fav').href = iconUrl;
+
+        const manifest = {
+            "name": "German Idealism",
+            "short_name": "GerReader",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#0a0a0a",
+            "theme_color": "#0a0a0a",
+            "icons": [
+                {
+                    "src": iconUrl,
+                    "sizes": "192x192",
+                    "type": "image/svg+xml"
+                },
+                {
+                    "src": iconUrl,
+                    "sizes": "512x512",
+                    "type": "image/svg+xml"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        document.querySelector('#manifest-placeholder').setAttribute('href', manifestURL);
+    </script>
+</head>
+<body>
+
+<!-- Indicator for Hidden Mode -->
+<div id="hidden-mode-indicator">
+    <svg class="icon-eye" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+    HIDDEN MODE ACTIVE
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="mobile-header">
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <div class="mobile-title" id="mobile-title">GERMAN IDEALISM</div>
+    <div style="width:24px;"></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <button class="close-sidebar-btn" onclick="closeSidebar()">✕</button>
+    <div class="sidebar-header">
+        <div class="sidebar-icon"></div>
+        <h2>PHILOSOPHIA</h2>
+        <span>German Idealism Reader</span>
+    </div>
+    
+    <!-- New Stylish Search Button -->
+    <button class="sidebar-search-btn" onclick="openSearchModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        SEARCH TEXTS
+    </button>
+
+    <div class="nav-item active" onclick="loadContent('reinhold')"><span>06. REINHOLD</span></div>
+    <div class="nav-item" onclick="loadContent('fichte')"><span>07. FICHTE</span></div>
+    <div class="nav-item" onclick="loadContent('schelling')"><span>08. SCHELLING</span></div>
+    <div class="nav-item" onclick="loadContent('hegel')"><span>09. HEGEL</span></div>
+    <div class="nav-item" onclick="loadContent('hegel_logik')"><span>10. HEGEL (LOGIK)</span></div>
+</div>
+
+<!-- FAB Menu -->
+<div class="fab-container" id="fabContainer" onclick="toggleFab()">
+    <div class="fab-main">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </div>
+    <!-- New Hidden Mode Toggle Button with Monochrome Eye SVG -->
+    <div class="fab-sub" onclick="toggleHiddenMode(); event.stopPropagation();">
+        <svg class="icon-eye" id="icon-eye-toggle" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+    </div>
+    <div class="fab-sub" onclick="openChatModal(); event.stopPropagation();">💬</div>
+    <div class="fab-sub" onclick="generateTranslationQuiz(); event.stopPropagation();">✎</div>
+</div>
+
+<div class="main-content">
+    <header>
+        <h1 id="doc-title">REINHOLD</h1>
+        <div class="subtitle" id="doc-subtitle">Beiträge zur Berichtigung</div>
+    </header>
+
+    <div class="parallel-section" id="parallelText"></div>
+
+    <div class="vocab-section">
+        <h2>VOCABULARY</h2>
+        <div class="vocab-grid" id="vocabGrid"></div>
+    </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>TRANSLATION QUIZ</h2>
+            <button class="close-modal-btn" onclick="closeModal('quizModal')">✕</button>
+        </div>
+        <div id="quizContainer"></div>
+    </div>
+</div>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>ASK PHILOSOPHER</h2>
+            <button class="close-modal-btn" onclick="closeModal('chatModal')">✕</button>
+        </div>
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-message ai">
+                こんにちは。ドイツ観念論について、何か質問はありますか？
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="質問を入力...">
+            <button class="chat-send-btn" onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
+</div>
+
+<!-- Search Modal -->
+<div id="searchModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>SEARCH</h2>
+            <button class="close-modal-btn" onclick="closeModal('searchModal')">✕</button>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="検索キーワード (例: 自我, Geist)..." onkeyup="performSearch()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+    const apiKey = "AIzaSyAtJXMs2gU7WqR-bL684FfXnxktTThwc-4"; // Provided by user previously
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-09-2025" });
+
+    // --- Local Storage Management ---
+    const STORAGE_KEY_PROGRESS = 'german_reader_progress_classic';
+    const STORAGE_KEY_NOTES = 'german_reader_notes_classic';
+
+    function getProgress() {
+        const data = localStorage.getItem(STORAGE_KEY_PROGRESS);
+        return data ? JSON.parse(data) : {};
+    }
+
+    function saveProgress(docId, sentenceIndex, score) {
+        const progress = getProgress();
+        if (!progress[docId]) progress[docId] = {};
+        progress[docId][sentenceIndex] = {
+            score: score,
+            timestamp: Date.now(),
+            isPassed: score >= 80
+        };
+        localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(progress));
+    }
+
+    function getNotes() {
+        const data = localStorage.getItem(STORAGE_KEY_NOTES);
+        return data ? JSON.parse(data) : {};
+    }
+
+    function saveNote(docId, sentenceIndex, text) {
+        const notes = getNotes();
+        if (!notes[docId]) notes[docId] = {};
+        notes[docId][sentenceIndex] = text;
+        localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(notes));
+    }
+
+    // --- Data Structure ---
+    const allData = {
+        reinhold: {
+            title: "REINHOLD",
+            subtitle: "Beiträge zur Berichtigung (1790)",
+            sentences: [
+                { de: "Jedes Bewußtsein läßt sich nur durch drei Bestandteile denken.", ja: "いかなる意識も、3つの構成要素によってのみ考えられる。" },
+                { de: "Etwas, das sich bewußt ist, und Subjekt, etwas, dessen man sich bewußt ist, und Objekt und etwas, wodurch man sich bewußt ist, und das Vorstellung heißt.", ja: "意識している当のもの、すなわち主観、意識されている当のもの、すなわち客観。そして、それを介して意識され、表象と呼ばれるところのもの。" },
+                { de: "Die Vorstellung ist also dasjenige, was im Bewußtsein vom Subjekt und Objekt verschieden ist, aber sich auf beide bezieht.", ja: "したがって表象とは、意識のうちにあって、主観とも客観とも異なっているけれども、そのどちらとも関係しているものである。" },
+                { de: "Dieses ist der gemeinschaftliche Charakter der sinnlichen Vorstellung, des Begriffes (oder der Vorstellung des Verstandes) und der Idee (oder der Vorstellung der Vernunft).", ja: "これは、感性的表象、概念（あるいは悟性の表象）、理念（あるいは理性の表象）に共通の性質である。" },
+                { de: "Ohne diesen Charakter der Vorstellung bestimmt gedacht zu haben, wird man keine Tatsache des Selbstbewußtseins und des Bewußtseins der Vorstellung bestimmt zu denken vermögen.", ja: "表象のこの性質をあらかじめ明確に考えておかないことには、自己意識や表象の意識といった事実を明確に考えることはできないだろう。" },
+                { de: "Der Satz des Bewußtseins überhaupt ist also der erste Grundsatz für die Wissenschaft der transzendentalen Gesetze der Erkenntnis.", ja: "したがってこの意識一般の命題が、認識の超越論的諸法則の学にとっての第一根本命題である。" },
+                { de: "Wenn unter Philosophie der Inbegriff der Erkenntnisse, die aus den letzten Gründen geschöpft werden, verstanden wird; und die Erkenntnis der letzten Gründe selbst zur Philosophie gezählt wird; so kann diese Erkenntnis die Elementarphilosophie heißen;", ja: "哲学ということで理解されているのが究極の諸根拠から得られる認識の相対であるならば、そして究極の根拠の認識それ自体が哲学に数えられるのであるならば、後者の認識を根元哲学と呼ぶことができる。" },
+                { de: "und der Satz des Bewußtseins ist der erste Grundsatz der Elementarphilosophie.", ja: "そして意識律がこの根元哲学の第一根本命題なのである。" }
+            ],
+            vocab: [
+                { de: "das Bewußtsein", ja: "意識" },
+                { de: "die Vorstellung", ja: "表象" },
+                { de: "das Subjekt", ja: "主観" },
+                { de: "das Objekt", ja: "客観" },
+                { de: "der Bestandteil", ja: "構成要素" },
+                { de: "transzendental", ja: "超越論的" }
+            ]
+        },
+        fichte: {
+            title: "FICHTE",
+            subtitle: "Grundlage der gesamten Wissenschaftslehre (1794/95)",
+            sentences: [
+                { de: "Aller Realität Quelle ist das Ich.", ja: "すべての実在の源泉は自我である。" },
+                { de: "Erst durch und mit dem Ich ist der Begriff der Realität gegeben.", ja: "自我によって、そして自我とともに初めて実在の概念が与えられる。" },
+                { de: "Aber das Ich ist, weil es sich setzt, und setzt sich, weil es ist.", ja: "しかし、自我が存在するのはそれが自己定立するからであり、そして自我が自己定立するのはそれが存在するからである。" },
+                { de: "Demnach sind sich setzen, und Sein Eins und ebendasselbe.", ja: "したがって自己定立と存在はまさに一つの同じものなのである。" },
+                { de: "Aber der Begriff des Sichsetzens und der Tätigkeit überhaupt sind wieder Eins und ebendasselbe.", ja: "だが、自己定立という概念と、活動一般という概念もこれまたまさに一つの同じものなのである。" },
+                { de: "Also alle Realität ist tätig, und alles Tätige ist Realität.", ja: "したがって、あらゆる現実性は活動的であり、そしてあらゆる活動的なものは現実性である。" },
+                { de: "Es ist sehr nötig, den Begriff der Tätigkeit sich hier ganz rein zu denken.", ja: "ぜひとも必要なのは、活動という概念を完全に純粋に考えることなのである。" },
+                { de: "Es kann durch denselben nichts bezeichnet werden, was nicht in dem absoluten Setzen des Ich durch sich selbst enthalten ist; nichts, was nicht unmittelbar im Satze: Ich bin, liegt.", ja: "この活動という概念によっては、自我の自己自身による絶対的定立のうちに含まれていないものは何も表すことはできず、「我あり」という命題のうちに直接含まれていないものは何も表すことはできない。" },
+                { de: "Es ist demnach klar, dass nicht nur von allen Zeitbedingungen, sondern auch von allem Objekte der Tätigkeit völlig zu abstrahieren ist.", ja: "したがって明らかなのは、単に活動すべての時間規定だけではなく、活動のすべての客観も完全に捨象しなければならないということである。" },
+                { de: "Die Tathandlung des Ich, indem es sein eigenes Sein setzt, geht gar nicht auf ein Objekt, sondern sie geht in sich selbst zurück.", ja: "自我の事行は自己が自我自身の存在を定立することによって、決して客観に向かうのではなくむしろ自己自身の下へと戻っていくのである。" },
+                { de: "Erst dann, wenn das Ich sich selbst vorstellt, wird es Objekt.", ja: "自我は、自我が自己自身を表象して初めて、自我は客観となる。" }
+            ],
+            vocab: [
+                { de: "das Ich", ja: "自我" },
+                { de: "die Tathandlung", ja: "事行" },
+                { de: "setzen", ja: "定立する" },
+                { de: "das Sein", ja: "存在" },
+                { de: "abstrahieren", ja: "捨象する" }
+            ]
+        },
+        schelling: {
+            title: "SCHELLING",
+            subtitle: "System des transzendentalen Idealismus (1800)",
+            sentences: [
+                { de: "Wenn alles Wissen auf der Übereinstimmung des Subjektiven und des Objektiven beruht, so ist die Aufgabe, diese Übereinstimmung zu erklären, ohne Zweifel die höchste für alles Wissen, und wenn, wie allgemein zugestanden wird, die Philosophie die höchste und oberste aller Wissenschaften ist, ohne Zweifel die Hauptaufgabe der Philosophie.", ja: "すべての知識が主観的なものと客観的なものの一致に基づくならば、この一致を説明するという課題は疑いなく、すべての知識にとって最高の課題であり、また一般的に認められているように哲学がすべての学の中で最高かつ最上のものであるならばこの問題は疑いなく哲学の主要課題である。" },
+                { de: "Das Objektive zum Ersten zu machen und das Subjektive daraus abzuleiten ist [...] Aufgabe der Natur-Philosophie.", ja: "客観的なものを第一とし、主観的なものをそこから導出するのが自然哲学の課題である。" },
+                { de: "Wenn es also eine Transzendental-Philosophie gibt, so bleibt ihr nur die entgegengesetzte Richtung übrig, vom Subjektiven als vom Ersten und Absoluten auszugehen und das Objektive aus ihm entstehen zu lassen.", ja: "したがって超越論哲学という物が存在するならば、それに残されているのは反対方向、すなわち第一かつ絶対的なものとしての主観的なものから出発し、客観的なものを主観的なものから生じさせるということだけである。" },
+                { de: "In die beiden möglichen Richtungen der Philosophie haben sich also Natur- und Transzendental-Philosophie geteilt,", ja: "したがって自然哲学と超越論的哲学は哲学の可能な方向へと別れたのである。" },
+                { de: "und wenn alle Philosophie darauf ausgehen muß, entweder aus der Natur eine Intelligenz, oder aus der Intelligenz eine Natur zu machen, so ist die Transzendental-Philosophie, welche diese letztere Aufgabe hat, die andere notwendige Grundwissenschaft der Philosophie.", ja: "そしてすべての哲学は、自然から知性を作り出すか、知性から自然を作り出すのかいずれかだとするならばこの後者の課題をもつ超越論的哲学は哲学のもう一方の必然的な根本学ということになる。" }
+            ],
+            vocab: [
+                { de: "das Wissen", ja: "知識" },
+                { de: "die Übereinstimmung", ja: "一致" },
+                { de: "das Subjektive", ja: "主観的なもの" },
+                { de: "das Objektive", ja: "客観的なもの" },
+                { de: "ableiten", ja: "導出する" }
+            ]
+        },
+        hegel: {
+            title: "HEGEL",
+            subtitle: "Phänomenologie des Geistes (1807)",
+            sentences: [
+                { de: "Das Selbstbewußtsein ist an und für sich, indem, und dadurch, dass es für ein anderes an und für sich ist; d. h. es ist nur als ein Anerkanntes.", ja: "自己意識が即かつ対自的にあるのは、それが即かつ対自的に他の自己意識に対してある、すなわちそれが承認されたものとしてのみある時、またそのことによってである。" },
+                { de: "Der Begriff dieser seiner Einheit in seiner Verdopplung, der sich im Selbstbewußtsein realisierenden Unendlichkeit, ist eine vielseitige und vieldeutige Verschränkung, so dass die Momente derselben teils genau auseinandergehalten, teils in dieser Unterscheidung zugleich auch als nicht unterschieden, oder immer in ihrer entgegengesetzten Bedeutung genommen und erkannt werden müssen.", ja: "このように、二重化されながらも統一しており、自己意識のうちで自らを現実化するこの無限性の概念は、多くの概念と多くの意味が交錯したものであり、 それ故、この交錯を構成する諸契機は、厳格に区別されねばならない一方で、 他方ではこのように区別されながらも同時にまた、区別されざるものとして、あるいは常にその正反対の意味で受け取られ認識されるのでなければならない。" },
+                { de: "Die Doppelsinnigkeit des Unterschiedenen liegt in dem Wesen des Selbstbewußtseins, unendlich, oder unmittelbar das Gegenteil der Bestimmtheit, in der es gesetzt ist, zu sein.", ja: "この区別されたものが二重の意味をもつということは自己意識の本質に含まれている。すなわち無限である。自己意識がそのうちへと置かれているところの規定されているところの正反対であるという本質のうちに含まれている" },
+                { de: "Die Auseinanderlegung des Begriffs dieser geistigen Einheit in ihrer Verdopplung stellt uns die Bewegung des Anerkennens dar.", ja: "こうした二重になりながらの精神的統一という概念を分析すると、承認の運動が我々に見えてくる。" },
+                { de: "Der Herr ist das für sich seiende Bewußtsein, aber nicht mehr nur der Begriff desselben, sondern für sich seiendes Bewußtsein, welches durch ein anderes Bewußtsein mit sich vermittelt ist, nämlich durch ein solches, zu dessen Wesen es gehört, dass es mit selbstständigem Sein oder der Dingheit überhaupt synthesiert ist.", ja: "主人は対自的に存在する意識である。しかし、もはやそうした意識の概念に留まらず、ある別の意識によって自己と媒介されているような、すなわち自立的な存在もしくは、物性一般と総合されているということが、その本質に属しているような、ある他の意識によって、自己と媒介されているような、そういった対自的に存在する意識である。" },
+                { de: "Der Herr bezieht sich auf den Knecht mittelbar durch das selbstständige Sein.", ja: "主人は、自立的な存在を介して、間接的に奴隷と関わる。" }
+            ],
+            vocab: [
+                { de: "an und für sich", ja: "即かつ対自的に" },
+                { de: "das Anerkannte", ja: "承認されたもの" },
+                { de: "die Verdopplung", ja: "二重化" },
+                { de: "die Unendlichkeit", ja: "無限性" },
+                { de: "die Verschränkung", ja: "交錯" }
+            ]
+        },
+        hegel_logik: {
+            title: "HEGEL",
+            subtitle: "Wissenschaft der Logik (1816)",
+            sentences: [
+                { de: "Was die Natur des Begriffes sei, kann so wenig unmittelbar angegeben werden, als der Begriff irgend eines anderen Gegenstandes unmittelbar aufgestellt werden kann.", ja: "①概念の本性が何であるかを、直接的に示すことが出来ないのは、他の任意の対象の概念を直接的に示すことが出来ないのと同じである。" },
+                { de: "Es könnte etwa scheinen, dass um den Begriff eines Gegenstandes anzugeben, das Logische vorausgesetzt werde, und dieses somit nicht wieder etwas anderes zu seinem Voraus haben, noch ein abgeleitetes sein könne, wie in der Geometrie logische Sätze, wie sie in Anwendung auf die Größe erscheinen und in dieser Wissenschaft gebraucht werden, in der Form von Axiomen, unabgeleiteten und unableitbaren Erkenntnisbestimmungen vorangeschickt werden.", ja: "②たとえば次のように思われるかもしれない、すなわち、ある対象の概念を示すためには、論理的なものが前提され、そしてこの論理的なものはそれゆえこれまた他の物を前提とすることはありえず、またそれが導出されたものであるということもありえない。それは幾何学において、量に適応されて現れ、この学問の内に使用される論理的な命題は公理という形式ですなわち導出不可能な認識規則という形式で前提されるのと同じである。" },
+                { de: "Ob nun wohl der Begriff nicht nur als eine subjektive Voraussetzung, sondern als absolute Grundlage anzusehen ist, so kann er diese doch nicht sein, als insofern er sich zur Grundlage gemacht hat.", ja: "③さて、概念は単に主観的な前提ではなく絶対的な基礎とみなされなければいけない、とはいえ概念が自らを基礎たらしめた場合を除いては、やはり概念が絶対的な基礎であることはありえない。" },
+                { de: "Das abstrakt-Unmittelbare ist wohl ein Erstes; als dieses Abstrakte, ist es aber vielmehr ein Vermitteltes, von dem also, wenn es in seiner Wahrheit gefaßt werden soll, seine Grundlage erst zu suchen ist.", ja: "④確かに抽象的に直接的なものが第一のものである。しかしこうした抽象的なものとして、それはむしろ媒介されたものであり、それゆえ、この抽象的で直接的なものをその真実の姿でとらえようとするならばその基礎はまずはこの媒介されたもののうちに求めるのでなければならない。" },
+                { de: "Diese muß daher zwar ein Unmittelbares sein, aber so dass es aus der Aufhebung der Vermittlung sich zum Unmittelbaren gemacht hat.", ja: "⑤それゆえ確かにこの基礎は直接的なものでなければならないが、しかし媒介が使用されることによって自らを直接的なものにしたというようにして直接的なものでなければならないのである。" }
+            ],
+            vocab: [
+                { de: "voraussetzen", ja: "前提する" },
+                { de: "das Axiom", ja: "公理" },
+                { de: "die Grundlage", ja: "基礎" },
+                { de: "unmittelbar", ja: "直接的な" },
+                { de: "vermittelt", ja: "媒介された" }
+            ]
+        }
+    };
+
+    let currentId = 'reinhold';
+
+    // --- Logic ---
+    window.loadContent = function(id) {
+        currentId = id;
+        const data = allData[id];
+        const progress = getProgress()[id] || {};
+        const notes = getNotes()[id] || {};
+
+        if(window.innerWidth <= 768) closeSidebar();
+
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const indexMap = { 'reinhold': 0, 'fichte': 1, 'schelling': 2, 'hegel': 3, 'hegel_logik': 4 };
+        document.querySelectorAll('.nav-item')[indexMap[id]].classList.add('active');
+
+        document.getElementById('doc-title').innerHTML = data.title;
+        document.getElementById('doc-subtitle').innerText = data.subtitle;
+        document.getElementById('mobile-title').innerText = data.title;
+
+        const container = document.getElementById('parallelText');
+        container.innerHTML = '';
+        
+        data.sentences.forEach((sent, index) => {
+            const div = document.createElement('div');
+            
+            // Apply status classes
+            let statusClass = '';
+            if (progress[index]) {
+                statusClass = progress[index].isPassed ? 'passed' : 'failed';
+            }
+            div.className = `sentence-group ${statusClass}`;
+            
+            // Note value
+            const noteValue = notes[index] || "";
+            const noteVisibleClass = noteValue ? 'visible' : '';
+            
+            div.innerHTML = `
+                <div class="de-text-row">
+                    <div class="de-text">${sent.de}</div>
+                    <button class="btn-speak" onclick="speakText('${sent.de.replace(/'/g, "\\'")}')">🔈</button>
+                </div>
+                <!-- Japanese Text Area with Toggle Class -->
+                <div class="ja-text" onclick="toggleReveal(this)">
+                    ${sent.ja}
+                </div>
+                <div class="action-row">
+                    <button class="btn-action-minimal" onclick="explainSentence(${index})">
+                        <span>●</span> ANALYZE
+                    </button>
+                    <button class="btn-action-minimal" onclick="toggleNote(${index})">
+                        <span>●</span> NOTE
+                    </button>
+                </div>
+                
+                <div class="note-area ${noteVisibleClass}" id="note-area-${index}">
+                    <textarea class="note-input" id="note-input-${index}" placeholder="Write your notes here..." oninput="saveNoteHandler(${index}, this.value)">${noteValue}</textarea>
+                </div>
+
+                <div class="ai-analysis" id="ai-response-${index}">
+                    <div class="ai-body"></div>
+                </div>
+            `;
+            
+            div.addEventListener('click', (e) => {
+                if(e.target.closest('button') || e.target.closest('textarea')) return;
+                document.querySelectorAll('.sentence-group').forEach(p => p.classList.remove('active'));
+                div.classList.add('active');
+            });
+
+            container.appendChild(div);
+        });
+
+        const vocabGrid = document.getElementById('vocabGrid');
+        vocabGrid.innerHTML = '';
+        data.vocab.forEach(v => {
+            const item = document.createElement('div');
+            item.className = 'vocab-item';
+            item.innerHTML = `<span class="vocab-de">${v.de}</span><span class="vocab-ja">${v.ja}</span>`;
+            vocabGrid.appendChild(item);
+        });
+        
+        window.scrollTo(0, 0);
+    }
+
+    // --- Sidebar & UI Logic ---
+    window.toggleSidebar = function() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('open');
+    }
+    window.closeSidebar = function() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+    window.toggleFab = function() { document.getElementById('fabContainer').classList.toggle('active'); }
+
+    // --- Hidden Mode Logic (New!) ---
+    window.toggleHiddenMode = function() {
+        const eyeIconPath = document.querySelector("#icon-eye-toggle path");
+        const eyeIconCircle = document.querySelector("#icon-eye-toggle circle");
+        
+        document.body.classList.toggle('hidden-mode');
+        
+        // Toggle icon state
+        if (document.body.classList.contains('hidden-mode')) {
+             // Closed eye / slashed eye path
+             eyeIconPath.setAttribute("d", "M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24");
+             eyeIconCircle.style.display = 'none';
+             // Add strike-through line to SVG manually if needed or swap whole SVG
+             document.getElementById("icon-eye-toggle").innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+        } else {
+             // Open eye path
+             document.getElementById("icon-eye-toggle").innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        }
+
+        // Reset all revealed items when toggling mode
+        document.querySelectorAll('.ja-text.revealed').forEach(el => el.classList.remove('revealed'));
+    }
+
+    window.toggleReveal = function(element) {
+        if (document.body.classList.contains('hidden-mode')) {
+            element.classList.toggle('revealed');
+        }
+    }
+
+    // Notes Logic
+    window.toggleNote = function(index) {
+        document.getElementById(`note-area-${index}`).classList.toggle('visible');
+    }
+    window.saveNoteHandler = function(index, text) {
+        saveNote(currentId, index, text);
+    }
+
+    // Text to Speech
+    window.speakText = function(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("ブラウザが音声読み上げに対応していません。");
+        }
+    }
+
+    // Search Feature
+    window.openSearchModal = function() {
+        document.getElementById('searchModal').classList.add('active');
+        document.getElementById('searchModal').style.display = 'flex';
+        document.getElementById('searchInput').focus();
+    }
+
+    window.performSearch = function() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '';
+
+        if (query.length < 2) return;
+
+        Object.keys(allData).forEach(key => {
+            const doc = allData[key];
+            doc.sentences.forEach((sent, idx) => {
+                if (sent.de.toLowerCase().includes(query) || sent.ja.includes(query)) {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.innerHTML = `
+                        <div class="result-source">${doc.title}</div>
+                        <div class="result-text">${sent.de.substring(0, 60)}...</div>
+                    `;
+                    item.onclick = () => {
+                        loadContent(key);
+                        closeModal('searchModal');
+                        setTimeout(() => {
+                            const el = document.querySelectorAll('.sentence-group')[idx];
+                            if(el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                el.classList.add('active');
+                            }
+                        }, 100);
+                    };
+                    resultsContainer.appendChild(item);
+                }
+            });
+        });
+    }
+
+    // AI Chat
+    window.openChatModal = function() { document.getElementById('chatModal').classList.add('active'); document.getElementById('chatModal').style.display = 'flex'; }
+    window.sendMessage = async function() {
+        const input = document.getElementById('chatInput');
+        const container = document.getElementById('chatContainer');
+        const text = input.value.trim();
+        if(!text) return;
+        const userDiv = document.createElement('div'); userDiv.className = 'chat-message user'; userDiv.textContent = text; container.appendChild(userDiv);
+        input.value = ''; container.scrollTop = container.scrollHeight;
+        const aiDiv = document.createElement('div'); aiDiv.className = 'chat-message ai'; aiDiv.innerHTML = '<span class="loader"></span> Thinking...'; container.appendChild(aiDiv);
+        container.scrollTop = container.scrollHeight;
+        const prompt = `You are a wise philosophy tutor specializing in German Idealism. User Question: "${text}". Answer in Japanese politely and concisely.`;
+        try { const result = await model.generateContent(prompt); const response = result.response.text(); aiDiv.innerHTML = response.replace(/\n/g, '<br>'); } catch (e) { aiDiv.textContent = "Error: " + e.message; }
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Explain
+    window.explainSentence = async function(index) {
+        const responseBox = document.getElementById(`ai-response-${index}`);
+        const contentDiv = responseBox.querySelector('.ai-body');
+        const btn = document.getElementById(`explain-btn-${index}`);
+        if (responseBox.classList.contains('visible')) { responseBox.classList.remove('visible'); return; }
+        responseBox.classList.add('visible'); contentDiv.innerHTML = '<span class="loader"></span> Thinking...'; btn.disabled = true;
+        const sent = allData[currentId].sentences[index];
+        const prompt = `
+            あなたは優秀なドイツ語教師です。以下の文を日本語で文法的に分析してください。
+            ドイツ語: "${sent.de}"
+            日本語訳: "${sent.ja}"
+
+            出力は以下のHTML形式のみ（Markdownなし、必ず日本語で）：
+            <h3>📝 構文解析</h3>
+            <ul><li>主語・述語・目的語の特定</li><li>関係代名詞や接続詞の機能</li></ul>
+            <h3>📖 重要表現</h3>
+            <ul><li><code>単語</code>: 意味と解説</li></ul>
+            <h3>💡 アドバイス</h3>
+            <p>翻訳のコツや注意点</p>
+        `;
+        try { const result = await model.generateContent(prompt); contentDiv.innerHTML = result.response.text(); } catch (error) { contentDiv.innerHTML = `<span style="color:#d4af37">Error: ${error.message}</span>`; } finally { btn.disabled = false; }
+    }
+
+    // Quiz Logic with Priorities
+    let currentQuizQuestions = [];
+    let currentQuizIndices = []; 
+
+    window.generateTranslationQuiz = async function() {
+        const modal = document.getElementById('quizModal');
+        const container = document.getElementById('quizContainer');
+        modal.classList.add('active'); modal.style.display = 'flex';
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#d4af37; font-family:\'Montserrat\'"><span class="loader"></span> GENERATING QUIZ...</div>';
+
+        // Select questions based on progress
+        const progress = getProgress()[currentId] || {};
+        const sentences = allData[currentId].sentences;
+        
+        let targetIndices = [];
+        const notAttempted = [];
+        const failed = [];
+        const passed = [];
+
+        sentences.forEach((_, idx) => {
+            if (!progress[idx]) {
+                notAttempted.push(idx);
+            } else if (!progress[idx].isPassed) {
+                failed.push(idx);
+            } else {
+                passed.push(idx);
+            }
+        });
+
+        // Priority: Not Attempted > Failed > Passed
+        if (notAttempted.length > 0) {
+            targetIndices = notAttempted.slice(0, 2);
+        } else if (failed.length > 0) {
+            targetIndices = failed.slice(0, 2);
+        } else {
+            targetIndices = passed.sort(() => 0.5 - Math.random()).slice(0, 2);
+        }
+        
+        currentQuizIndices = targetIndices;
+
+        const targetSentencesText = targetIndices.map(idx => `Sentence ${idx + 1}: ${sentences[idx].de}`).join("\n");
+        const prompt = `
+            Create descriptive translation questions based on these specific German sentences.
+            ${targetSentencesText}
+            
+            Return ONLY a raw JSON array matching the input order:
+            [
+                {
+                    "german_text": "The German sentence provided",
+                    "reference_translation": "Japanese translation"
+                }
+            ]
+        `;
+
+        try {
+            const result = await model.generateContent(prompt);
+            let text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+            currentQuizQuestions = JSON.parse(text);
+            renderQuiz(currentQuizQuestions);
+        } catch (error) {
+            container.innerHTML = `<div style="color:#d4af37">Error: ${error.message}</div>`;
+        }
+    }
+
+    function renderQuiz(questions) {
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'quiz-card';
+            div.innerHTML = `
+                <p style="font-family:'Montserrat'; font-size:0.8rem; color:#888; margin-bottom:10px;">QUESTION 0${index + 1}</p>
+                <div class="source-text">${q.german_text}</div>
+                <textarea id="user-ans-${index}" class="translation-input" placeholder="日本語訳を入力..."></textarea>
+                <button class="btn-grade" onclick="gradeAnswer(${index})">SUBMIT</button>
+                <div id="feedback-${index}" style="margin-top:20px;"></div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    window.gradeAnswer = async function(index) {
+        const userAns = document.getElementById(`user-ans-${index}`).value;
+        const feedbackDiv = document.getElementById(`feedback-${index}`);
+        const qData = currentQuizQuestions[index];
+        const sentenceIndex = currentQuizIndices[index];
+
+        if(!userAns) return;
+
+        feedbackDiv.innerHTML = '<span style="color:#d4af37; font-size:0.8rem; font-family:\'Montserrat\'">GRADING...</span>';
+        
+        const prompt = `
+            Grade translation. Original: "${qData.german_text}". Student: "${userAns}". Reference: "${qData.reference_translation}".
+            Return JSON: { "score": 80, "feedback": "Japanese feedback" }
+        `;
+
+        try {
+            const result = await model.generateContent(prompt);
+            const data = JSON.parse(result.response.text().replace(/```json/g, '').replace(/```/g, '').trim());
+            
+            // Save Progress
+            saveProgress(currentId, sentenceIndex, data.score);
+            
+            // Update view after short delay to show status
+            setTimeout(() => loadContent(currentId), 2000); 
+
+            feedbackDiv.innerHTML = `
+                <div style="border:1px solid #333; padding:20px;">
+                    <div style="font-family:'Cinzel'; font-size:1.2rem; color:${data.score >= 80 ? '#2e7d32' : '#c62828'}">SCORE: ${data.score}</div>
+                    <p style="font-size:0.9rem; margin:15px 0; line-height:1.8;">${data.feedback}</p>
+                    <div style="font-size:0.8rem; color:#666; border-top:1px solid #222; padding-top:10px; margin-top:10px;">
+                        MODEL: ${qData.reference_translation}
+                    </div>
+                </div>
+            `;
+        } catch (e) {
+            feedbackDiv.innerHTML = "Error grading.";
+        }
+    }
+
+    window.closeModal = function(id) {
+        document.getElementById(id).classList.remove('active');
+        setTimeout(() => { document.getElementById(id).style.display = 'none'; }, 300);
+        if(id === 'quizModal') loadContent(currentId);
+    }
+
+    loadContent('reinhold');
+</script>
+
+</body>
+</html>
